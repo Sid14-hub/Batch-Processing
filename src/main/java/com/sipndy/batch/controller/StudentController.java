@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/student")
 @RestController
 public class StudentController {
-
+    // This is the job which has steps of batch processing
     private final Job job;
+    //this is resposible for launching the job which has defined step
     private final JobLauncher jobLauncher;
 
     @PostMapping
     public void student(){
         JobParameters jobParameters = new JobParametersBuilder().addLong("startAt",System.currentTimeMillis()).toJobParameters();
-
         try {
             jobLauncher.run(job,jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |

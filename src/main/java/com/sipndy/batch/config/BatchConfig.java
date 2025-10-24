@@ -23,11 +23,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 @RequiredArgsConstructor
 public class BatchConfig {
 
-    //spring batch already provide us jobRepository
+    //spring batch already provide us jobRepository resposible for storing all the meta data  of batch
     private final JobRepository jobRepository;
+    //this is for tracking the transaction state of the data
     private final PlatformTransactionManager transactionManager;
+    //User-Defined repository
     private final StudentRepository studentRepository;
 
+    //Bean for reading the file
     @Bean
     public FlatFileItemReader<Student> itemReader(){
         var reader = new FlatFileItemReader<Student>();
@@ -38,11 +41,13 @@ public class BatchConfig {
         return reader;
     }
 
+    //this one is resposbile for processing data as per business logic
     @Bean
     public StudentProcessor processor(){
         return new StudentProcessor();
     }
 
+    //this bean is responsible for writing the data
     @Bean
     public RepositoryItemWriter<Student> write(){
         var writer = new RepositoryItemWriter<Student>();
@@ -51,6 +56,7 @@ public class BatchConfig {
         return writer;
     }
 
+    //Steps to read write and process the data
     @Bean
     public Step importStep(){
         return new StepBuilder("csvImport",jobRepository)
@@ -60,7 +66,7 @@ public class BatchConfig {
                 .writer(write())
                 .build();
     }
-
+    //this is the job which will run the stesp
     @Bean
     public Job runJob(){
         return new JobBuilder("ImportStudents",jobRepository)
@@ -68,6 +74,7 @@ public class BatchConfig {
                 .build();
     }
 
+    //Read the file line by line and add the value to the speciffied pojo
     private LineMapper<Student> lineMapper() {
         var lineMapper = new DefaultLineMapper<Student>();
         var lineTokenizer = new DelimitedLineTokenizer();
