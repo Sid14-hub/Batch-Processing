@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: batch
+  datasource:
+    url: jdbc:postgresql://localhost:5432/learnbatch
+    username: postgres
+    password: ${db.password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  batch:
+    jdbc:
+      initialize-schema: always #spring batch to always initialize schema incase it doesnt has one
+    job:
+      enabled: false
+
+server:
+  port: 9090
